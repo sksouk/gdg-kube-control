@@ -1,0 +1,33 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: gdg-vientiane-api-ingress
+  annotations:
+    kubernetes.io/ingress.class: alb
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/subnets: subnet-81ff11e7, subnet-dea0bf97, subnet-a6d471ff
+    alb.ingress.kubernetes.io/healthcheck-path: /api/status
+    alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}]'
+    alb.ingress.kubernetes.io/shield-advanced-protection: 'true'
+  namespace: gdg-vientiane-api
+  labels:
+    app: gdg-vientiane-api
+spec:
+  rules:
+    - http:
+        paths:
+          - path: /auth-service
+            pathType: Prefix
+            backend:
+              service:
+                name: gdg-vientiane-auth-service
+                port:
+                  number: 80
+          - path: /user-service
+            pathType: Prefix
+            backend:
+              service:
+                name: gdg-vientiane-user-service
+                port:
+                  number: 80                        
+

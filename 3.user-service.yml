@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gdg-vientiane-user
+  namespace: gdg-vientiane-api
+  labels:
+    app: gdg-vientiane-user
+spec:
+  selector:
+    matchLabels:
+      app: gdg-vientiane-user
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        app: gdg-vientiane-user
+    spec:
+      containers:
+      - name: gdg-vientiane-user-container
+        image: 883347473856.dkr.ecr.ap-southeast-1.amazonaws.com/gdg-vientiane-user-service:latest
+        imagePullPolicy: Always
+        ports:
+            - containerPort: 7000
+        resources:
+          limits:
+            memory: 1Gi
+            cpu: 300m
+---
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: gdg-vientiane-api
+  name: gdg-vientiane-user-service
+  labels:
+    app: gdg-vientiane-user
+spec:
+  type: NodePort
+  selector:
+    app: gdg-vientiane-user
+  ports:
+    - port: 80
+      targetPort: 7070
+      protocol: TCP
