@@ -34,12 +34,23 @@ eksctl get labels --cluster [cluster_name] --nodegroup [nodegroup_name]
 # Update worker node
 eksctl scale nodegroup --name=[nodegroup_name] --cluster=[cluster_name] --nodes=2 --nodes-min=2 --nodes-max=10
 
+# Get cluster
+eksctl get clusters
+
+# Get nodegroup from cluster
+eksctl get nodegroup --cluster=[cluster_name]
+
+# Delete nodegroup
+eksctl delete nodegroup --cluster=[cluster_name] --name=[nodegroup_name]
+
+# Delete cluster
+eksctl delete cluster [cluster_name]
 
 ----------------------------------------------------------------
 ----------------------------------------------------------------
 # Build image and push to ECR
 docker build -t [service_name] . --platform=linux/amd64
 
-docker tag [service_name]:latest 883347473856.dkr.ecr.ap-southeast-1.amazonaws.com/[service_name]:latest
+docker tag [service_name]:latest [user_role_id].dkr.ecr.ap-southeast-1.amazonaws.com/[service_name]:latest
 
-docker push 883347473856.dkr.ecr.ap-southeast-1.amazonaws.com/[service_name]:latest
+docker push [user_role_id].dkr.ecr.ap-southeast-1.amazonaws.com/[service_name]:latest
