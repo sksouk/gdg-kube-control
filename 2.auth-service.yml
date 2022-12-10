@@ -9,7 +9,6 @@ spec:
   selector:
     matchLabels:
       app: gdg-vientiane-auth
-  replicas: 2
   template:
     metadata:
       labels:
@@ -17,14 +16,11 @@ spec:
     spec:
       containers:
       - name: gdg-vientiane-auth-container
-        image: 883347473856.dkr.ecr.ap-southeast-1.amazonaws.com/gdg-vientiane-auth-service:latest
+        image: 883347473856.dkr.ecr.ap-southeast-1.amazonaws.com/gdg-auth-service:latest
         imagePullPolicy: Always
         ports:
             - containerPort: 7000
-        resources:
-          limits:
-            memory: 1Gi
-            cpu: 300m
+
 ---
 apiVersion: v1
 kind: Service
@@ -41,3 +37,24 @@ spec:
     - port: 80
       targetPort: 7000
       protocol: TCP
+
+---
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  namespace: gdg-vientiane-api
+  name: gdg-vientiane-auth
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: gdg-vientiane-auth
+  minReplicas: 2
+  maxReplicas: 10
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: 50
